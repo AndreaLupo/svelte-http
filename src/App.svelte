@@ -1,9 +1,37 @@
 <script>
-
+	import {onMount} from 'svelte';
 
 	let hobbies = [];
 	let hobbyInput;
 	let isLoading = false;
+
+	onMount( () => {
+		isLoading = true;
+		fetch('https://svelte-course-a2f4f-default-rtdb.firebaseio.com/hobbies.json')
+		.then(res => {
+			if(!res.ok) {
+				throw new Error("Faild!");
+			}
+			// convert from json to JS data
+			return res.json();
+		})
+		.then( data => {
+			isLoading = false;
+			console.log(data);
+			// data
+			hobbies = Object.values(data);
+			
+			// keys
+			let keys = Object.keys(data);
+			console.log(keys);
+
+			for(let key in data) {
+				console.log(key, data[key]);
+			}
+		})
+		.catch();
+	});
+	
 
 	function addHobby() {
 		hobbies = [...hobbies, hobbyInput.value];
